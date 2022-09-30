@@ -1,0 +1,43 @@
+{
+  "file": {
+    "path": "./image/",
+    "name": "random-ascii"
+  },
+  "crop": {
+    "side": 80,
+    "top": 120
+  },
+  "binarization": {
+    "thresh": 100
+  },
+  "dilation": {
+    "kernel": {
+      "toRotate": [15, 10],
+      "toFindRect": [25, 10]
+    }
+  },
+  "erosion": {
+    "kernel": {
+      "toFindRect": [10, 1]
+    }
+  },
+  "rotation": {
+    "thresh": 0.1
+  },
+  "denoise": {
+    "strength": 30,
+    "templateSize": 7,
+    "searchSize": 21
+  },
+  "contrast": {
+    "multiply": 1.2,
+    "add": 30
+  },
+  "cropPoints": {
+    "minThresh": 15
+  },
+  "charImage": {
+    "width": 0,
+    "height": 0
+  }
+}
