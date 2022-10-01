@@ -9,16 +9,6 @@ def gray(image: np.ndarray) -> np.ndarray:
 
 
 def crop(image: np.ndarray, top: int, side: int) -> np.ndarray:
-    """이미지를 잘라서 반환하는 함수
-
-    Args:
-        image (np.ndarray): 자르고 싶은 이미지
-        margin_top (int): 상단부를 자르고 싶은 정도
-        margin_side (int): 상단부 외 나머지를 자르고 싶은 정도
-
-    Returns:
-        np.ndarray: 잘린 이미지를 반환함
-    """
     start_y = top
     end_y = image.shape[0] - side
     start_x = side
