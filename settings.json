@@ -1,7 +1,7 @@
 {
   "file": {
     "path": "./image/",
-    "name": "random-ascii"
+    "name": "sample-text"
   },
   "crop": {
     "side": 80,
