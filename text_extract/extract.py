@@ -19,7 +19,7 @@ def set_textbox_horizontally(image: np.ndarray, settings: dict):
     crop_img = image
 
     binary_thresh = settings["binarization"]["thresh"]
-    binary_img = process.binarization(crop_img, binary_thresh, invert=True)
+    binary_img = process.binarization(crop_img, binary_thresh, do_invert=True)
 
     dilation_setting = settings["dilation"]
     rotate_kernel_size = dilation_setting["kernel"]["toRotate"]
@@ -47,7 +47,7 @@ def extract_textbox(image: np.ndarray, settings: dict) -> np.ndarray:
         np.ndarray: 글자부분만 있는 이미지
     """
     binary_thresh = settings["binarization"]["thresh"]
-    binary_img = process.binarization(image, binary_thresh, invert=True)
+    binary_img = process.binarization(image, binary_thresh, do_invert=True)
 
     dilation_setting = settings["dilation"]
     erosion_setting = settings["erosion"]
@@ -73,10 +73,12 @@ def enhance_textbox(image: np.ndarray, settings: dict) -> np.ndarray:
         settings (dict): json파일에서 읽어온 setting
 
     Returns:
-        np.ndarray: 노이즈 및 선명도가 개선된 텍스트박스 이미지 반환
+        np.ndarray: 노이즈 및 선명도가 개선된 반전된 텍스트박스 이미지 반환
     """
+    invert_img = process.invert(image)
+
     denoise_settings = settings["denoise"]
-    denoise_img = process.denoise(image, **denoise_settings)
+    denoise_img = process.denoise(invert_img, **denoise_settings)
 
     contrast_settings = settings["contrast"]
     contrast_img = process.increase_contrast(denoise_img, **contrast_settings)
