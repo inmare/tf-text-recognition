@@ -27,9 +27,15 @@ def crop(image: np.ndarray, top: int, side: int) -> np.ndarray:
     return image[start_y:end_y, start_x:end_x]
 
 
-def binarization(image: np.ndarray, thresh: int, invert: bool = True) -> np.ndarray:
-    if invert:
-        image = cv2.bitwise_not(image)
+def invert(image: np.ndarray) -> np.ndarray:
+    invert_img = cv2.bitwise_not(image)
+
+    return invert_img
+
+
+def binarization(image: np.ndarray, thresh: int, do_invert: bool = True) -> np.ndarray:
+    if do_invert:
+        image = invert(image)
     ret, dst = cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
 
     return dst
@@ -66,11 +72,10 @@ def increase_contrast(image: np.ndarray, multiply: float, add: int) -> np.ndarra
 
 
 def rotate(image: np.ndarray, angle: float, center: list) -> np.ndarray:
-    t_center = tuple(center)
-    print(type(t_center))
-    print(type(t_center[0]))
     matrix = cv2.getRotationMatrix2D(tuple(center), angle, 1)
-    rotate_img = cv2.warpAffine(image, matrix, image.shape, flags=cv2.INTER_CUBIC)
+    rotate_img = cv2.warpAffine(
+        image, matrix, (0, 0), flags=cv2.INTER_CUBIC, borderValue=255
+    )
 
     return rotate_img
 
