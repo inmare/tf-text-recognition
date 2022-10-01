@@ -86,5 +86,44 @@ def enhance_textbox(image: np.ndarray, settings: dict) -> np.ndarray:
     return contrast_img
 
 
+def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> dict:
+    """이미지에서 글자에 대한 정보를 반환하는 함수
+
+    Args:
+        image (np.ndarray): 텍스트박스 이미지
+        crop_settings (dict): json파일에서 읽어온 setting
+        mode (str): 어떤 방향으로 읽을건지 정하는 모드
+            "h"면 글자, "v"면 줄 단위로 구분되는 지점을 반환한다
+
+    Returns:
+        dict: 글자에 대한 정보를 반환한다. 반환되는 객체의 구조는 아래와 같다.
+            crop_points: 글자, 혹은 줄이 구분되는 지점을 ndarray형태로 반환한다.
+            max_length: 글자, 혹은 줄의 최대 크기를 반환한다.
+    """
+    min_thresh = crop_settings["minThresh"]
+    crop_top = crop_settings["cropTop"]
+    crop_side = crop_settings["cropSide"]
+    # TODO 만약 값이 낮아야 할 부분이 높다면 그걸로 사진의 오염을 판단하는 함수도 추후에 만들수도?
+
+    # 이미지의 픽셀들을 한 방향으로 더한 다음 그 방향의 픽셀 개수로 나누어서
+    # 픽셀 값들이 이미지의 높이나 넓이에 상관없이 일정한 비율을 유지하도록 함
+    pixel_sum = None
+    crop_img = None
+    if mode == "h":
+        pixel_sum = np.sum(image, axis=0) / image.shape[0]
+        crop_img = image[:, crop_side : image.shape[1] - crop_side]
+    elif mode == "v":
+        pixel_sum = np.sum(image, axis=1) / image.shape[1]
+        crop_img = image[crop_top : image.shape[0] - crop_top, :]
+
+    low_thresh = np.min(pixel_sum) + min_thresh
+    low_points = pixel_sum < low_thresh
+
+    from matplotlib import pyplot as plt
+
+    for is_low, value in zip(low_points, pixel_sum):
+        pass
+
+
 if __name__ == "__main__":
     passs
