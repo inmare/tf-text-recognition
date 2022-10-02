@@ -2,12 +2,6 @@ import numpy as np
 import cv2
 
 
-def gray(image: np.ndarray) -> np.ndarray:
-    gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    return gray_img
-
-
 def crop(image: np.ndarray, top: int, side: int) -> np.ndarray:
     start_y = top
     end_y = image.shape[0] - side
@@ -55,10 +49,15 @@ def denoise(
     return denoise_img
 
 
-def increase_contrast(image: np.ndarray, multiply: float, add: int) -> np.ndarray:
-    contrast_img = cv2.convertScaleAbs(image, alpha=multiply, beta=add)
+def contrast(image, amount):
+    # 출처: https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+    f = 131 * (amount + 127) / (127 * (131 - amount))
+    alpha_c = f
+    gamma_c = 127 * (1 - f)
 
-    return contrast_img
+    image = cv2.addWeighted(image, alpha_c, image, 0, gamma_c)
+
+    return image
 
 
 def rotate(image: np.ndarray, angle: float, center: list) -> np.ndarray:
