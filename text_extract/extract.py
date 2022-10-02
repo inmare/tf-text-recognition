@@ -81,7 +81,7 @@ def enhance_textbox(image: np.ndarray, settings: dict) -> np.ndarray:
     denoise_img = process.denoise(invert_img, **denoise_settings)
 
     contrast_settings = settings["contrast"]
-    contrast_img = process.increase_contrast(denoise_img, **contrast_settings)
+    contrast_img = process.contrast(denoise_img, **contrast_settings)
 
     return contrast_img
 
