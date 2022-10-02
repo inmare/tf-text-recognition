@@ -31,10 +31,9 @@ def get_file_names(file_settings: dict) -> list:
 
 
 def read_image(path: str, name: str) -> np.ndarray:
-    image = cv2.imread(path + name)
-    gray_img = process.gray(image)
+    image = cv2.imread(path + name, cv2.IMREAD_GRAYSCALE)
 
-    return gray_img
+    return image
 
 
 def get_rect_point(contour: np.ndarray) -> list:
@@ -104,15 +103,11 @@ def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> list:
 
     # 이미지의 픽셀들을 한 방향으로 더한 다음 그 방향의 픽셀 개수로 나누어서
     # 픽셀 값들이 이미지의 높이나 넓이에 상관없이 일정한 비율을 유지하도록 함
-    # 그리고 이미지를 약간 잘라서 너무 낮은 값들이 low_vlaue에 해당되지 않도록 함
     pixel_sum = None
-    crop_img = None
     if mode == "h":
         pixel_sum = np.sum(image, axis=0) / image.shape[0]
-        crop_img = image[:, crop_side : image.shape[1] - crop_side]
     elif mode == "v":
         pixel_sum = np.sum(image, axis=1) / image.shape[1]
-        crop_img = image[crop_top : image.shape[0] - crop_top, :]
 
     low_value = np.min(pixel_sum)
     low_thresh = low_value + min_thresh
@@ -134,7 +129,6 @@ def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> list:
                     check_end = idx + 1
 
                 check_section = pixel_sum[check_start:check_end]
-                min_point = None
                 min_point = np.argmin(check_section) + check_start
                 crop_points.append(min_point)
                 check_start = None
