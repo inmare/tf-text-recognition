@@ -14,9 +14,9 @@ def set_textbox_horizontally(image: np.ndarray, settings: dict):
         np.ndarray: 회전한 이미지. 만약 이미지의 각도가 회전하지 않아도 되는 정도라면
         그냥 가장자리가 잘린 이미지를 반환한다
     """
-    # crop_setting = settings["crop"]
-    # crop_img = process.crop(image, **crop_setting)
-    crop_img = image
+    crop_setting = settings["crop"]
+    crop_img = process.crop(image, **crop_setting)
+    # crop_img = image
 
     binary_thresh = settings["binarization"]["thresh"]
     binary_img = process.binarization(crop_img, binary_thresh, do_invert=True)
