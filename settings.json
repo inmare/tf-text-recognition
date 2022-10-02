@@ -1,7 +1,8 @@
 {
   "file": {
     "path": "./image/",
-    "name": "random-ascii"
+    "hasPrefix": true,
+    "prefix": "random-ascii"
   },
   "crop": {
     "side": 80,
@@ -34,7 +35,9 @@
     "add": 30
   },
   "cropPoints": {
-    "minThresh": 15
+    "minThresh": 20,
+    "cropTop": 10,
+    "cropSide": 5
   },
   "charImage": {
     "width": 0,
