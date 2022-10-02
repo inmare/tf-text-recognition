@@ -31,11 +31,10 @@
     "searchSize": 21
   },
   "contrast": {
-    "multiply": 1.2,
-    "add": 30
+    "amount": 16
   },
   "cropPoints": {
-    "minThresh": 20,
+    "minThresh": 5,
     "cropTop": 10,
     "cropSide": 5
   },
