@@ -1,11 +1,37 @@
 import numpy as np
 import math
 import cv2
+import os
+import re
 import text_extract.process as process
 
 
+def get_file_names(file_settings: dict) -> list:
+    file_path = file_settings["path"]
+    dir_names = os.listdir(file_path)
+
+    has_prefix = file_settings["hasPrefix"]
+    prefix = file_settings["prefix"]
+    regex = None
+    file_names = []
+
+    if has_prefix:
+        regex = re.compile(f"^{prefix}.*\.jpg$")
+    else:
+        regex = re.compile("\.jpg$")
+
+    for name in dir_names:
+        is_match = regex.search(name)
+        if is_match:
+            file_names.append(name)
+
+    file_names.sort()
+
+    return file_names
+
+
 def read_image(path: str, name: str) -> np.ndarray:
-    image = cv2.imread(path + name + ".jpg")
+    image = cv2.imread(path + name)
     gray_img = process.gray(image)
 
     return gray_img
@@ -57,7 +83,7 @@ def get_roation_info(contour: np.ndarray) -> float:
     return angle, center
 
 
-def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> dict:
+def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> list:
     """이미지에서 글자에 대한 정보를 반환하는 함수
 
     Args:
@@ -67,8 +93,9 @@ def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> dict:
             "h"면 글자, "v"면 줄 단위로 구분되는 지점을 반환한다
 
     Returns:
-        crop_points: 글자, 혹은 줄이 구분되는 지점을 ndarray형태로 반환한다.
-        max_length: 글자, 혹은 줄의 최대 크기를 반환한다.
+        두개의 정보를 list형태로 반환한다
+            crop_points (np.ndarray): 글자, 혹은 줄이 구분되는 지점
+            max_length (int): 글자, 혹은 줄의 최대 크기
     """
     min_thresh = crop_settings["minThresh"]
     crop_top = crop_settings["cropTop"]
@@ -115,23 +142,7 @@ def get_char_info(image: np.ndarray, crop_settings: dict, mode: str) -> dict:
 
     max_size = np.max(np.diff(crop_points))
 
-    return crop_points, max_size
-
-    # from matplotlib import pyplot as plt
-
-    # axis = None
-    # if mode == "h":
-    #     axis = np.arange(image.shape[1])
-    # elif mode == "v":
-    #     axis = np.arange(image.shape[0])
-
-    # plt.plot(axis, pixel_sum)
-
-    # for idx, value in zip(axis, pixel_sum):
-    #     if idx in crop_points:
-    #         plt.plot(idx, value, marker="o", color="r", markersize=3)
-
-    # plt.show()
+    return [np.array(crop_points), max_size]
 
 
 if __name__ == "__main__":
