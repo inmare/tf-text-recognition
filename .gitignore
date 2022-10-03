@@ -2,3 +2,4 @@
 __pycache__
 text_extract/__pycache__
 browser/node_modules
+browser/dist
