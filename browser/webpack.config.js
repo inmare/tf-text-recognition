@@ -43,8 +43,14 @@ module.exports = {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        type: "asset/resource",
+      },
     ],
   },
+  // node_modules 패키지 번들링 출처
+  // https://gist.github.com/davidgilbertson/c9af3e583f95de03439adced007b47f1
   optimization: {
     // runtimeChunk: "single",
     splitChunks: {
@@ -56,8 +62,8 @@ module.exports = {
           test: /[\\/]node_modules[\\/]/,
           name(module) {
             const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-            )[1];
+              /[\\/]node_modules[\\/](.*?)[\\/](.*?)([\\/]|$)/
+            )[2];
 
             return `${packageName.replace("@", "")}`;
           },
@@ -70,5 +76,13 @@ module.exports = {
         extractComments: false,
       }),
     ],
+  },
+  // openvcv-js를 위한 설정
+  resolve: {
+    fallback: {
+      fs: false,
+      path: false,
+      crypto: false,
+    },
   },
 };
