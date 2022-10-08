@@ -86,7 +86,7 @@ export default class Data {
     return boundingRect;
   }
 
-  static getCharPoint(image) {
+  static getCropPoint(image) {
     const data = image.data;
     const size = [image.rows, image.cols];
     const imgTensor = tf.tensor(data, size);

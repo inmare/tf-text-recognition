@@ -26,7 +26,7 @@ function processImage(e) {
   const clearTextbox = Extract.enhanceTextbox(textbox);
   textbox.delete();
 
-  Data.getCharPoint(clearTextbox);
+  const cropPointH = Data.getCropPoint(clearTextbox);
 
   cv.imshow(original, rotateImg);
   cv.imshow(current, clearTextbox);
