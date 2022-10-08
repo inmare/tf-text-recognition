@@ -21,6 +21,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "@techstark/opencv-js": "^4.6.0-release.1"
+    "@techstark/opencv-js": "^4.6.0-release.1",
+    "@tensorflow/tfjs": "^3.21.0"
   }
 }
