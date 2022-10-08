@@ -11,7 +11,10 @@ export default class Process {
 
   static crop(image, cropRect) {
     // 후에 setting.js에 적힌 설명대로 변수를 수정하기
-    const [x, y, width, height] = cropRect;
+    const x = cropRect[3];
+    const y = cropRect[0];
+    const width = image.cols - cropRect[1] - cropRect[3];
+    const height = image.rows - cropRect[0] - cropRect[2];
     const rect = new cv.Rect(x, y, width, height);
     const cropImg = image.roi(rect);
 
