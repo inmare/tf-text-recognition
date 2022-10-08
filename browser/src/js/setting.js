@@ -17,6 +17,11 @@ const Setting = {
     sigmaStrength: 75,
   },
   contrastAmount: 16,
+  lowCorrection: 5,
+  charImage: {
+    width: 0,
+    height: 0,
+  },
 };
 
 export default Setting;
