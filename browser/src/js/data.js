@@ -1,4 +1,6 @@
 import cv from "@techstark/opencv-js";
+import * as tf from "@tensorflow/tfjs";
+import Setting from "./setting.js";
 
 export default class Data {
   static getMainContour(image) {
@@ -82,5 +84,50 @@ export default class Data {
     contourPoly.delete();
 
     return boundingRect;
+  }
+
+  static getCharPoint(image) {
+    const data = image.data;
+    const size = [image.rows, image.cols];
+    const imgTensor = tf.tensor(data, size);
+    const correction = Setting.lowCorrection;
+    // horizontal sum
+    const [sum, lowPoint] = tf.tidy(() => {
+      const len = tf.scalar(size[0]);
+      const sum = tf.sum(imgTensor, 0).div(len);
+
+      const minValue = tf.min(sum).dataSync()[0];
+      const minThresh = minValue + correction;
+      const threshTensor = tf.fill([sum.size], minThresh);
+      const lowPoint = tf.less(sum, threshTensor);
+      return [sum, lowPoint.dataSync()];
+    });
+    imgTensor.dispose();
+
+    let checkStart = null;
+    let checkLen = null;
+    let cropPoint = [];
+
+    for (let i = 0; i < lowPoint.length - 1; i++) {
+      const isLow = lowPoint[i];
+      if (isLow) {
+        if (checkStart == null) checkStart = i;
+
+        if (!lowPoint[i + 1]) {
+          checkLen = i + 1 - checkStart;
+          const minIdx = tf.tidy(() => {
+            const checkSection = tf.slice(sum, [checkStart], [checkLen]);
+            const minIdx = tf.argMin(checkSection).dataSync()[0] + checkStart;
+            return minIdx;
+          });
+          cropPoint.push(minIdx);
+          checkStart = null;
+          checkLen = null;
+        }
+      }
+    }
+    sum.dispose();
+
+    return cropPoint;
   }
 }
