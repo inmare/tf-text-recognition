@@ -3,6 +3,20 @@ const Setting = {
   // 하지만 현재는 테스트용으로 임의로 숫자를 설정한 상태
   crop: [50, 400, 350, 300],
   binaryThresh: 100,
+  dilationKernel: {
+    rotate: [15, 10],
+    findRect: [25, 10],
+  },
+  erosionKernel: {
+    findRect: [15, 1],
+  },
+  angleThresh: 0.1,
+  denoise: {
+    kernelSize: 3,
+    sigmaColor: 75,
+    sigmaStrength: 75,
+  },
+  contrastAmount: 16,
 };
 
 export default Setting;

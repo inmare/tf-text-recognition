@@ -2,8 +2,7 @@
 // node_modules
 import cv from "@techstark/opencv-js";
 // custom modules
-import Process from "./process.js";
-import Setting from "./setting.js";
+import Extract from "./extract.js";
 // css
 import "../css/style.css";
 // images
@@ -21,18 +20,12 @@ function main() {
 }
 
 function processImage(e) {
-  const imageElem = e.target;
-  const image = cv.imread(imageElem);
-  const grayImg = Process.gray(image);
-  image.delete();
-  const cropRect = Setting.crop;
-  const cropImg = Process.crop(grayImg, cropRect);
-  grayImg.delete();
+  const rotateImg = Extract.setImageRotation(e.target);
+  const textbox = Extract.getTextbox(rotateImg);
+  const clearTextbox = Extract.enhanceTextbox(textbox);
 
-  const binaryThresh = Setting.binaryThresh;
-  const binaryImg = Process.binarization(cropImg, binaryThresh, true);
-  cv.imshow(original, cropImg);
-  cropImg.delete();
-  cv.imshow(current, binaryImg);
-  binaryImg.delete();
+  cv.imshow(original, rotateImg);
+  cv.imshow(current, clearTextbox);
+  rotateImg.delete();
+  clearTextbox.delete();
 }
