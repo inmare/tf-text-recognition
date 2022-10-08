@@ -3,7 +3,6 @@
 import cv from "@techstark/opencv-js";
 // custom modules
 import Extract from "./extract.js";
-import Data from "./data.js";
 // css
 import "../css/style.css";
 // images
@@ -26,7 +25,8 @@ function processImage(e) {
   const clearTextbox = Extract.enhanceTextbox(textbox);
   textbox.delete();
 
-  const cropPointH = Data.getCropPoint(clearTextbox);
+  const charInfo = Extract.getCharInfo(clearTextbox);
+  console.log(charInfo);
 
   cv.imshow(original, rotateImg);
   cv.imshow(current, clearTextbox);

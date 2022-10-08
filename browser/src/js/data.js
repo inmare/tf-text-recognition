@@ -1,6 +1,5 @@
 import cv from "@techstark/opencv-js";
 import * as tf from "@tensorflow/tfjs";
-import Setting from "./setting.js";
 
 export default class Data {
   static getMainContour(image) {
@@ -86,20 +85,28 @@ export default class Data {
     return boundingRect;
   }
 
-  static getCropPoint(image) {
+  static getCropPoint(image, correction, mode) {
     const data = image.data;
     const size = [image.rows, image.cols];
     const imgTensor = tf.tensor(data, size);
-    const correction = Setting.lowCorrection;
     // horizontal sum
     const [sum, lowPoint] = tf.tidy(() => {
-      const len = tf.scalar(size[0]);
-      const sum = tf.sum(imgTensor, 0).div(len);
+      let len;
+      let sum;
+      if (mode == "h") {
+        len = tf.scalar(size[0]);
+        sum = tf.sum(imgTensor, 0).div(len);
+      } else if (mode == "v") {
+        len = tf.scalar(size[1]);
+        sum = tf.sum(imgTensor, 1).div(len);
+      }
 
       const minValue = tf.min(sum).dataSync()[0];
       const minThresh = minValue + correction;
       const threshTensor = tf.fill([sum.size], minThresh);
       const lowPoint = tf.less(sum, threshTensor);
+
+      tf.dispose([len, threshTensor]);
       return [sum, lowPoint.dataSync()];
     });
     imgTensor.dispose();
@@ -108,16 +115,19 @@ export default class Data {
     let checkLen = null;
     let cropPoint = [];
 
-    for (let i = 0; i < lowPoint.length - 1; i++) {
+    for (let i = 0; i < lowPoint.length; i++) {
       const isLow = lowPoint[i];
       if (isLow) {
         if (checkStart == null) checkStart = i;
 
-        if (!lowPoint[i + 1]) {
-          checkLen = i + 1 - checkStart;
+        if (i == lowPoint.length - 1 || !lowPoint[i + 1]) {
+          checkLen =
+            i == lowPoint.length - 1 ? i - checkStart : i + 1 - checkStart;
           const minIdx = tf.tidy(() => {
             const checkSection = tf.slice(sum, [checkStart], [checkLen]);
             const minIdx = tf.argMin(checkSection).dataSync()[0] + checkStart;
+            tf.dispose(checkSection);
+
             return minIdx;
           });
           cropPoint.push(minIdx);
@@ -129,5 +139,22 @@ export default class Data {
     sum.dispose();
 
     return cropPoint;
+  }
+
+  static getMaxSize(cropPoint) {
+    const cropPointTensor = tf.tensor1d(cropPoint);
+    const maxSize = tf.tidy(() => {
+      const tensorSize = cropPointTensor.size - 1;
+      const tensorA = tf.slice(cropPointTensor, [1], [tensorSize]);
+      const tensorB = tf.slice(cropPointTensor, [0], [tensorSize]);
+      const diff = tf.sub(tensorA, tensorB);
+      const maxSize = tf.max(diff);
+      tf.dispose([tensorSize, tensorA, tensorB, diff]);
+
+      return maxSize.dataSync()[0];
+    });
+    cropPointTensor.dispose();
+
+    return maxSize;
   }
 }

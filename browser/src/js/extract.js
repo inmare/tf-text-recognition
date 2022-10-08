@@ -69,4 +69,23 @@ export default class Extract {
 
     return contrastImg;
   }
+
+  static getCharInfo(image) {
+    const correction = Setting.lowCorrection;
+    const cropPointH = Data.getCropPoint(image, correction, "h");
+    const maxWidth = Data.getMaxSize(cropPointH);
+    const cropPointV = Data.getCropPoint(image, correction, "v");
+    const maxHeight = Data.getMaxSize(cropPointV);
+
+    const charInfo = {
+      cropPointH: cropPointH,
+      cropPointV: cropPointV,
+      maxSize: {
+        width: maxWidth,
+        height: maxHeight,
+      },
+    };
+
+    return charInfo;
+  }
 }
