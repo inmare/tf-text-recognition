@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 // node_modules
-import cv, { rotate } from "@techstark/opencv-js";
+import cv from "@techstark/opencv-js";
 // custom modules
+import DataProcess from "./data_process.js";
 import Extract from "./extract.js";
+import RandomArray from "./seed_random.js";
 // css
 import "../css/style.css";
 // images
-import textImg from "../image/sample-text.jpg";
+// import textImg from "../image/sample-text.jpg";
 import randomAsciiImg from "../image/random-ascii.jpg";
 
 const original = document.querySelector("#original-canvas");
@@ -20,19 +22,27 @@ function main() {
   imageElem.onload = processImage;
 }
 
-function processImage(e) {
+async function processImage(e) {
   const rotateImg = Extract.setImageRotation(e.target);
   const textbox = Extract.getTextbox(rotateImg);
-  // rotateImg.delete();
+  rotateImg.delete();
   const clearTextbox = Extract.enhanceTextbox(textbox);
   textbox.delete();
 
   const charInfo = Extract.getCharInfo(clearTextbox);
-  console.log(charInfo);
+  // 나중에 다른 함수로 분리해서 작성하기
+  const imageData = await DataProcess.convertImageToTensor(
+    clearTextbox,
+    charInfo
+  );
+  const dataLength = imageData.shape[0];
+  const asciiArray = RandomArray.makeArray("ascii");
+  const labels = RandomArray.getRandomArray(asciiArray, dataLength);
+  const oneHotLabels = await DataProcess.convertLabelToOneHot(labels);
 
+  // const labelData =
   // cv.imshow(original, rotateImg);
-  cv.imshow(current, rotateImg);
+  // cv.imshow(current, rotateImg);
   // rotateImg.delete();
-  rotateImg.delete();
-  clearTextbox.delete();
+  // clearTextbox.delete();
 }
