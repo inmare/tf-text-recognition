@@ -1,7 +1,7 @@
 import cv from "@techstark/opencv-js";
 import * as tf from "@tensorflow/tfjs";
 
-export default class Data {
+export default class ImgData {
   static getMainContour(image) {
     const contours = new cv.MatVector();
     const hier = new cv.Mat();
