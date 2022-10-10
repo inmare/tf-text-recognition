@@ -1,7 +1,7 @@
 import cv from "@techstark/opencv-js";
-import Process from "./process.js";
+import ImgProcess from "./image_process.js";
 import Setting from "./setting.js";
-import Data from "./data.js";
+import ImgData from "./image_data.js";
 
 // 상황에 따라서 이미지를 삭제하거나 유지해야 하는 상황이 발생했고,
 // 그에 따라 일괄적인 이미지 삭제가 어려운 상황임.
@@ -9,41 +9,41 @@ import Data from "./data.js";
 export default class Extract {
   static setImageRotation(imageElem) {
     const image = cv.imread(imageElem);
-    const grayImg = Process.gray(image);
+    const grayImg = ImgProcess.gray(image);
     image.delete();
     const cropRect = Setting.crop;
-    const cropImg = Process.crop(grayImg, cropRect);
+    const cropImg = ImgProcess.crop(grayImg, cropRect);
     grayImg.delete();
     const binaryThresh = Setting.binaryThresh;
-    const binaryImg = Process.binarize(cropImg, binaryThresh, true);
+    const binaryImg = ImgProcess.binarize(cropImg, binaryThresh, true);
     const rotationKernel = Setting.dilationKernel.rotate;
-    const dilateImg = Process.dilate(binaryImg, rotationKernel);
+    const dilateImg = ImgProcess.dilate(binaryImg, rotationKernel);
     binaryImg.delete();
 
-    const mainContour = Data.getMainContour(dilateImg);
+    const mainContour = ImgData.getMainContour(dilateImg);
     dilateImg.delete();
-    const [center, angle] = Data.getRotationInfo(mainContour);
+    const [center, angle] = ImgData.getRotationInfo(mainContour);
     mainContour.delete();
 
-    const rotateImg = Process.rotate(cropImg, center, -angle);
+    const rotateImg = ImgProcess.rotate(cropImg, center, -angle);
     cropImg.delete();
     return rotateImg;
   }
 
   static getTextbox(image) {
     const binaryThresh = Setting.binaryThresh;
-    const binaryImg = Process.binarize(image, binaryThresh, true);
+    const binaryImg = ImgProcess.binarize(image, binaryThresh, true);
     const dilationKernel = Setting.dilationKernel.findRect;
-    const dilateImg = Process.dilate(binaryImg, dilationKernel);
+    const dilateImg = ImgProcess.dilate(binaryImg, dilationKernel);
     binaryImg.delete();
     const erosionKernel = Setting.erosionKernel.findRect;
-    const erodeImg = Process.erode(dilateImg, erosionKernel);
+    const erodeImg = ImgProcess.erode(dilateImg, erosionKernel);
     dilateImg.delete();
 
-    const mainContour = Data.getMainContour(erodeImg);
+    const mainContour = ImgData.getMainContour(erodeImg);
     erodeImg.delete();
 
-    const rect = Data.getRectPoint(mainContour);
+    const rect = ImgData.getRectPoint(mainContour);
     mainContour.delete();
 
     const textbox = image.roi(rect);
@@ -52,11 +52,11 @@ export default class Extract {
   }
 
   static enhanceTextbox(image) {
-    const invertImg = Process.invert(image);
+    const invertImg = ImgProcess.invert(image);
     const kernelSize = Setting.denoise.kernelSize;
     const sigmaColor = Setting.denoise.sigmaColor;
     const sigmaStrength = Setting.denoise.sigmaStrength;
-    const denoiseImg = Process.denoise(
+    const denoiseImg = ImgProcess.denoise(
       invertImg,
       kernelSize,
       sigmaColor,
@@ -64,7 +64,7 @@ export default class Extract {
     );
     invertImg.delete();
     const amount = Setting.contrastAmount;
-    const contrastImg = Process.contrast(denoiseImg, amount);
+    const contrastImg = ImgProcess.contrast(denoiseImg, amount);
     denoiseImg.delete();
 
     return contrastImg;
@@ -72,10 +72,10 @@ export default class Extract {
 
   static getCharInfo(image) {
     const correction = Setting.lowCorrection;
-    const cropPointH = Data.getCropPoint(image, correction, "h");
-    const maxWidth = Data.getMaxSize(cropPointH);
-    const cropPointV = Data.getCropPoint(image, correction, "v");
-    const maxHeight = Data.getMaxSize(cropPointV);
+    const cropPointH = ImgData.getCropPoint(image, correction, "h");
+    const maxWidth = ImgData.getMaxSize(cropPointH);
+    const cropPointV = ImgData.getCropPoint(image, correction, "v");
+    const maxHeight = ImgData.getMaxSize(cropPointV);
 
     const charInfo = {
       cropPointH: cropPointH,
