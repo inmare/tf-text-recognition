@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import cv from "@techstark/opencv-js";
 
-export default class Process {
+export default class ImgProcess {
   static gray(image) {
     const grayImg = new cv.Mat();
     cv.cvtColor(image, grayImg, cv.COLOR_BGR2GRAY);
@@ -88,5 +88,30 @@ export default class Process {
     cv.addWeighted(image, alphaC, image, 0, gammaC, contrastImg);
 
     return contrastImg;
+  }
+
+  static addPadding(image, width, height) {
+    const imgHeight = image.rows;
+    const imgWidth = image.cols;
+    const padV = height - imgHeight;
+    const padH = width - imgWidth;
+    const padTop = Math.round(padV / 2);
+    const padBottom = padV - padTop;
+    const padLeft = Math.round(padH / 2);
+    const padRight = padH - padLeft;
+    const padColor = new cv.Scalar(0, 0, 0);
+    const paddedImg = new cv.Mat();
+    cv.copyMakeBorder(
+      image,
+      paddedImg,
+      padTop,
+      padBottom,
+      padLeft,
+      padRight,
+      cv.BORDER_CONSTANT,
+      padColor
+    );
+
+    return paddedImg;
   }
 }
