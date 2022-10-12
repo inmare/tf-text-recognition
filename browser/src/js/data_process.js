@@ -9,7 +9,6 @@ export default class DataProcess {
     const sampleSize = (cropPointH.length - 1) * (cropPointV.length - 1);
     const maxSize = charInfo.maxSize;
     let dataArray = [];
-    const previous = performance.now();
 
     for (let i = 0; i < cropPointV.length - 1; i++) {
       for (let j = 0; j < cropPointH.length - 1; j++) {
@@ -25,14 +24,8 @@ export default class DataProcess {
           maxSize.height
         );
         charImg.delete();
-        dataArray.push(paddedImg.data);
+        dataArray.push(...paddedImg.data);
         paddedImg.delete();
-
-        // const now = performance.now();
-        // if (previous) {
-        //   console.log(now - previous);
-        // }
-        // previous = now;
       }
     }
 
@@ -50,14 +43,14 @@ export default class DataProcess {
       tf.dispose([imageTensor, maxValue]);
       return scaledTensor;
     });
-    imageData.dispose();
-    const now = performance.now();
-    console.log(now - previous);
+
+    return imageData;
   }
 
-  static async convertLabelToOneHot(labelArray) {
-    const labelTensor = tf.tensor1d(labelArray);
-    const oneHotLabel = tf.oneHot(labelTensor);
+  static async convertLabelToOneHot(labelArray, classLength) {
+    const labelTensor = tf.tensor1d(labelArray, "int32");
+    labelTensor.print();
+    const oneHotLabel = tf.oneHot(labelTensor, classLength);
 
     labelTensor.dispose();
     return oneHotLabel;
