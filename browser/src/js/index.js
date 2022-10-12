@@ -4,6 +4,7 @@ import cv from "@techstark/opencv-js";
 // custom modules
 import DataProcess from "./data_process.js";
 import Extract from "./extract.js";
+import Model from "./model.js";
 import RandomArray from "./seed_random.js";
 // css
 import "../css/style.css";
@@ -37,12 +38,12 @@ async function processImage(e) {
   );
   const dataLength = imageData.shape[0];
   const asciiArray = RandomArray.makeArray("ascii");
+  const classLength = asciiArray.length;
   const labels = RandomArray.getRandomArray(asciiArray, dataLength);
-  const oneHotLabels = await DataProcess.convertLabelToOneHot(labels);
+  const oneHotLabels = await DataProcess.convertLabelToOneHot(
+    labels,
+    classLength
+  );
 
-  // const labelData =
-  // cv.imshow(original, rotateImg);
-  // cv.imshow(current, rotateImg);
-  // rotateImg.delete();
-  // clearTextbox.delete();
+  Model.ml(imageData, oneHotLabels, charInfo.maxSize, asciiArray);
 }
