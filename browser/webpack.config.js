@@ -62,15 +62,15 @@ module.exports = {
           test: /[\\/]node_modules[\\/]/,
           name(module) {
             const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)[\\/](.*?)([\\/]|$)/
-            )[2];
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+            )[1];
 
             return `${packageName.replace("@", "")}`;
           },
         },
       },
     },
-    minimize: true,
+    // minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
