@@ -24,6 +24,7 @@ export default class RandomArray {
         array.push(i - 0x21);
       }
     }
+    return array;
   }
 
   static getRandomArray(array, length) {
