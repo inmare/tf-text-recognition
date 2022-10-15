@@ -23,15 +23,24 @@
     }
   },
   "rotation": {
-    "thresh": 0.1
+    "thresh": 0.01
   },
   "denoise": {
     "strength": 30,
     "templateSize": 7,
     "searchSize": 21
   },
+  "bilateral": {
+    "kernelSize": 3,
+    "sigmaColor": 0.05,
+    "sigmaSpace": 30
+  },
   "contrast": {
     "amount": 16
+  },
+  "skContrast": {
+    "min": 50,
+    "max": 230
   },
   "cropPoints": {
     "minThresh": 5,
