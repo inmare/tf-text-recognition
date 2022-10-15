@@ -1,5 +1,4 @@
-from skimage import morphology
-from skimage import io, color, filters
+from skimage import io, color, filters, morphology, transform
 import numpy as np
 
 
@@ -57,7 +56,7 @@ def denoise(
     return denoise_img
 
 
-def contrast(image, amount):
+def contrast(image: np.ndarray, amount: int()):
     # 출처: https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
     f = 131 * (amount + 127) / (127 * (131 - amount))
     alpha_c = f
@@ -69,10 +68,7 @@ def contrast(image, amount):
 
 
 def rotate(image: np.ndarray, angle: float, center: list) -> np.ndarray:
-    matrix = cv2.getRotationMatrix2D(tuple(center), angle, 1)
-    rotate_img = cv2.warpAffine(
-        image, matrix, (0, 0), flags=cv2.INTER_CUBIC, borderValue=255
-    )
+    rotate_img = transform.rotate(image, angle, center=center, cval=1.0)
 
     return rotate_img
 

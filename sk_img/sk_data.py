@@ -75,5 +75,27 @@ def calc_min_area_rect(contour):
     return rval
 
 
+def get_rotation_info(rect_point):
+    sorted_box = []
+    for point in rect_point:
+        sorted_box.append(list(point))
+
+    sorted_box.sort()
+
+    top_left = np.array(sorted_box[0])
+    top_right = np.array(sorted_box[2])
+    bottom_right = np.array(sorted_box[3])
+    vertex = np.array([top_right[0], top_left[1]])
+
+    diag_len = np.linalg.norm(top_right - top_left)
+    hori_len = np.linalg.norm(vertex - top_left)
+    angle = np.rad2deg(math.acos(hori_len / diag_len))
+
+    center = np.round_((top_left + bottom_right) / 2)
+    center = [int(center[0]), int(center[1])]
+
+    return angle, center
+
+
 if __name__ == "__main__":
     pass
