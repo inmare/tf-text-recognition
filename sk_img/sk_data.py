@@ -97,5 +97,14 @@ def get_rotation_info(rect_point):
     return angle, center
 
 
+def get_bounding_box(contour):
+    min_y = round(np.min(contour[:, 0]))
+    max_y = round(np.max(contour[:, 0]))
+    min_x = round(np.min(contour[:, 1]))
+    max_x = round(np.max(contour[:, 1]))
+
+    return [min_y, max_y, min_x, max_x]
+
+
 if __name__ == "__main__":
     pass
