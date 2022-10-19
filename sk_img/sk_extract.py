@@ -48,7 +48,7 @@ def enhance_textbox(image, settings):
     contrast_setting = settings["skContrast"]
     contrast_min = contrast_setting["min"]
     contrast_max = contrast_setting["max"]
-    contrast_img = contrast(image, contrast_min, contrast_max)
+    contrast_img = contrast(denoise_img, contrast_min, contrast_max)
 
     return contrast_img
 
