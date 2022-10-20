@@ -5,11 +5,10 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: "development",
-  // entry: {
-  //   index: "./src/js/index.js",
-  //   print: "./src/js/print.js",
-  // },
-  entry: "./src/js/index.js",
+  entry: {
+    index: "./src/js/index.js",
+    view: "./src/js/view.js",
+  },
   devtool: "inline-source-map",
   // devServer: {
   //   static: {
@@ -25,8 +24,16 @@ module.exports = {
   // },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "index.html"),
+      filename: "index.html",
+      template: path.resolve(__dirname, "./src/index.html"),
       minify: false,
+      chunks: ["index"],
+    }),
+    new HtmlWebpackPlugin({
+      filename: "view.html",
+      template: path.resolve(__dirname, "./src/view.html"),
+      minify: false,
+      chunks: ["view"],
     }),
     new MiniCssExtractPlugin({
       filename: "css/[name].css",

@@ -7,7 +7,7 @@ import Extract from "./extract.js";
 import Model from "./model.js";
 import RandomArray from "./seed_random.js";
 // css
-import "../css/style.css";
+import "../css/index.css";
 // images
 // import textImg from "../image/sample-text.jpg";
 import randomAsciiImg from "../image/random-ascii.jpg";
